@@ -25,18 +25,25 @@ app.get("/api/hello", function (req, res) {
 });
 
 app.get("/api/:date?", (req, res) => {
-  const fecha = req.params.date;
-  const objectResponse = {};
-  
-  if(!fecha){
-    objectResponse.unix = Date.parse(new Date())
-  }else if(fecha.includes('-')){
-    objectResponse.unix = Date.parse(fecha);
-  }else{
-    objectResponse.unix = Number(fecha);
-  }
 
-  objectResponse.utc = new Date(objectResponse.unix).toUTCString();
+  const param = !req.params.date 
+    ? Date.now() 
+    : !req.params.date.includes('-')
+        ? Number(req.params.date)
+        : req.params.date;
+  
+  console.log(param);
+  let date = new Date(param);
+  const objectResponse = {};
+  console.log("Param:", date)
+  console.log("Props param:", Object.getOwnPropertyNames(date))
+
+  if(date.toString() === 'Invalid Date'){
+    objectResponse.error = date.toString();
+  } else{
+    objectResponse.unix = date.getTime();
+    objectResponse.utc = date.toUTCString();
+  }
 
   res.json(objectResponse);
 });
