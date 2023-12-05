@@ -26,9 +26,12 @@ app.get("/api/hello", function (req, res) {
 
 app.get("/api/:date?", (req, res) => {
 
+  console.log('Original param: ', req.params.date)
+  console.log('Original typeof param: ', typeof req.params.date)
+
   const param = !req.params.date 
     ? Date.now() 
-    : !req.params.date.includes('-')
+    : !req.params.date.match(/\-|GMT/g)
         ? Number(req.params.date)
         : req.params.date;
   
@@ -36,7 +39,7 @@ app.get("/api/:date?", (req, res) => {
   let date = new Date(param);
   const objectResponse = {};
   console.log("Param:", date)
-  console.log("Props param:", Object.getOwnPropertyNames(date))
+  //console.log("Props param:", Object.getOwnPropertyNames(date))
 
   if(date.toString() === 'Invalid Date'){
     objectResponse.error = date.toString();
